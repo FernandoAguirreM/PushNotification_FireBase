@@ -7,6 +7,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
+using Android.Gms.Common;
 
 namespace PushNotifications.Droid
 {
@@ -23,6 +24,31 @@ namespace PushNotifications.Droid
             global::Xamarin.Forms.Forms.Init(this, bundle);
 
             LoadApplication(new App());
+
+            IsPlayServicesAvailable();
+        }
+
+        public bool IsPlayServicesAvailable()
+        {
+            int resultCode = GoogleApiAvailability.Instance.IsGooglePlayServicesAvailable(this);
+            if (resultCode != ConnectionResult.Success)
+            {
+                if (GoogleApiAvailability.Instance.IsUserResolvableError(resultCode))
+                    System.Diagnostics.Debug.WriteLine(GoogleApiAvailability.Instance.GetErrorString(resultCode));
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine("This device is not supported");
+
+                    Finish();
+                }
+                return false;
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("Google Play Services is available.");
+
+                return true;
+            }
         }
     }
 }
